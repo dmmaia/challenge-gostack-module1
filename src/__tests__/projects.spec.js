@@ -3,6 +3,7 @@ const app = require("../app");
 const { isUuid } = require("uuidv4");
 
 describe("Projects", () => {
+
   it("should be able to create a new repository", async () => {
     const response = await request(app)
       .post("/repositories")
@@ -12,7 +13,7 @@ describe("Projects", () => {
         techs: ["Node", "Express", "TypeScript"]
       });
 
-    expect(isUuid(response.body.id)).toBe(true);
+    expect(isUuid(response.body._id)).toBe(true);
 
     expect(response.body).toMatchObject({
       url: "https://github.com/Rocketseat/umbriel",
@@ -36,7 +37,7 @@ describe("Projects", () => {
     expect(response.body).toEqual(
       expect.arrayContaining([
         {
-          id: repository.body.id,
+          _id: repository.body._id,
           url: "https://github.com/Rocketseat/umbriel",
           title: "Umbriel",
           techs: ["Node", "Express", "TypeScript"],
@@ -56,14 +57,14 @@ describe("Projects", () => {
       });
 
     const response = await request(app)
-      .put(`/repositories/${repository.body.id}`)
+      .put(`/repositories/${repository.body._id}`)
       .send({
         url: "https://github.com/Rocketseat/unform",
         title: "Unform",
         techs: ["React", "ReactNative", "TypeScript", "ContextApi"]
       });
 
-    expect(isUuid(response.body.id)).toBe(true);
+    expect(isUuid(response.body._id)).toBe(true);
 
     expect(response.body).toMatchObject({
       url: "https://github.com/Rocketseat/unform",
@@ -88,7 +89,7 @@ describe("Projects", () => {
       });
 
     const response = await request(app)
-      .put(`/repositories/${repository.body.id}`)
+      .put(`/repositories/${repository.body._id}`)
       .send({
         likes: 15
       });
@@ -108,12 +109,12 @@ describe("Projects", () => {
       });
 
     await request(app)
-      .delete(`/repositories/${response.body.id}`)
+      .delete(`/repositories/${response.body._id}`)
       .expect(204);
 
     const repositories = await request(app).get("/repositories");
 
-    const repository = repositories.body.find(r => r.id === response.body.id);
+    const repository = repositories.body.find(r => r._id === response.body._id);
 
     expect(repository).toBe(undefined);
   });
