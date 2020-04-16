@@ -31,7 +31,7 @@ app.post("/repositories", (request, response) => {
   const { title, url, techs } = request.body;
   const likes = 0;
 
-  const repositore = { title, likes, url, techs, _id: uuid() };
+  const repositore = { title, likes, url, techs, id: uuid() };
 
   dbRepositories.insert(repositore, (err, repositore) => {
     if (err) {
@@ -43,8 +43,8 @@ app.post("/repositories", (request, response) => {
 
 });
 
-app.put("/repositories/:_id", (request, response) => {
-  const { _id } = request.params;
+app.put("/repositories/:id", (request, response) => {
+  const { id } = request.params;
   const { title, likes, url, techs } = request.body;
 
   if (likes) {
@@ -55,10 +55,10 @@ app.put("/repositories/:_id", (request, response) => {
       title,
       url,
       techs,
-      _id,
+      id,
     };
 
-    dbRepositories.update({ _id }, newRepositore ,{}, function (err, numReplaced) {
+    dbRepositories.update({ id }, newRepositore ,{}, function (err, numReplaced) {
       if (numReplaced <= 0) {
         response.status(400).send();
       } else {
@@ -70,10 +70,10 @@ app.put("/repositories/:_id", (request, response) => {
 
 });
 
-app.delete("/repositories/:_id", (request, response) => {
-  const { _id } = request.params;
+app.delete("/repositories/:id", (request, response) => {
+  const { id } = request.params;
 
-  dbRepositories.remove({ _id }, {}, function (err, numRemoved) {
+  dbRepositories.remove({ id }, {}, function (err, numRemoved) {
     if (numRemoved <= 0) {
       response.status(400).send();
     } else {
@@ -83,13 +83,13 @@ app.delete("/repositories/:_id", (request, response) => {
 
 });
 
-app.post("/repositories/:_id/like", (request, response) => {
-  const { _id } = request.params;
-  const repositoryId = _id;
+app.post("/repositories/:id/like", (request, response) => {
+  const { id } = request.params;
+  const repositoryId = id;
 
       dbLikes.find({repositoryId}, function (err, docs) {
         const likes = docs.length+1;
-        dbRepositories.update({ _id }, { $set: { likes } }, { multi: true }, function (err, numReplaced) {
+        dbRepositories.update({ id }, { $set: { likes } }, { multi: true }, function (err, numReplaced) {
           if (numReplaced <= 0) {
             response.status(400).send();
           } else {
